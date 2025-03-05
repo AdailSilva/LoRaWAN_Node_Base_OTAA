@@ -49,14 +49,14 @@
 #include <SPI.h>
 
 /* Definitions. */
-#define SCK_GPIO 18
-#define MISO_GPIO 19
-#define MOSI_GPIO 23
-#define NSS_GPIO 5
-#define RESET_GPIO 14
-#define DIO0_GPIO 34
-#define DIO1_GPIO 35 /* Note: not really used on this board. */
-#define DIO2_GPIO 39
+#define RADIO_SCLK_PORT         18
+#define RADIO_MISO_PORT         19
+#define RADIO_MOSI_PORT         23
+#define RADIO_NSS_PORT          5
+#define RADIO_RESET_PORT        14
+#define RADIO_DIO_0_PORT        34
+#define RADIO_DIO_1_PORT        35 /* Note: not really used on this board. */
+#define RADIO_DIO_2_PORT        39
 
 /* Credentials. */
 // CHIRPSTACK - CS (8 at 15 + 65 channels):
@@ -94,10 +94,10 @@ const unsigned TX_INTERVAL = 10;
 
 /* Pin mapping. */
 const lmic_pinmap lmic_pins = {
-  .nss = NSS_GPIO,
+  .nss = RADIO_NSS_PORT,
   .rxtx = LMIC_UNUSED_PIN,
-  .rst = RESET_GPIO,
-  .dio = { DIO0_GPIO, DIO1_GPIO, DIO2_GPIO },
+  .rst = RADIO_RESET_PORT,
+  .dio = { RADIO_DIO_0_PORT, RADIO_DIO_1_PORT, LMIC_UNUSED_PIN },  // DIO2 não é utilizado.
 };
 
 /*****************************
@@ -111,8 +111,8 @@ const lmic_pinmap lmic_pins = {
 
 /* Functions. */
 void onEvent(ev_t ev) {
-  //Serial.print(os_getTime());
-  //Serial.print(": ");
+  Serial.print(os_getTime());
+  Serial.print(": ");
   switch (ev) {
     case EV_SCAN_TIMEOUT:
       Serial.println(F("EV_SCAN_TIMEOUT"));
@@ -165,14 +165,25 @@ void onEvent(ev_t ev) {
       }
 
       /* ChirpStack AU915 */
-      LMIC_enableChannel(8);
-      LMIC_enableChannel(9);
-      LMIC_enableChannel(10);
-      LMIC_enableChannel(11);
-      LMIC_enableChannel(12);
-      LMIC_enableChannel(13);
-      LMIC_enableChannel(14);
-      LMIC_enableChannel(15);
+      // LMIC_enableChannel(0);  // 915.2 MHz.
+      // LMIC_enableChannel(1);  // 915.4 MHz.
+      // LMIC_enableChannel(2);  // 915.6 MHz.
+      // LMIC_enableChannel(3);  // 915.8 MHz
+      // LMIC_enableChannel(4);  // 916.0 MHz.
+      // LMIC_enableChannel(5);  // 916.2 MHz.
+      // LMIC_enableChannel(6);  // 916.4 MHz.
+      // LMIC_enableChannel(7);  // 916.6 MHz.
+
+      LMIC_enableChannel(8);  // 916.8 MHz.
+      LMIC_enableChannel(9);  // 917.0 MHz.
+      LMIC_enableChannel(10); // 917.2 MHz.
+      LMIC_enableChannel(11); // 917.4 MHz
+      LMIC_enableChannel(12); // 917.6 MHz.
+      LMIC_enableChannel(13); // 917.8 MHz.
+      LMIC_enableChannel(14); // 918.0 MHz.
+      LMIC_enableChannel(15); // 918.2 MHz.
+
+      //LMIC_enableChannel(64); /* Test */
       //LMIC_enableChannel(65); /* Test */
 
       /* Disable Adaptive Data Rate. */
